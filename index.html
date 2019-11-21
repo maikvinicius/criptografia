@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Criptografia</title>
+  </head>
+  <body>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h5 class="my-0 mr-md-auto font-weight-normal">CRIPTOGRAFIA</h5>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="index.html">César</a>
+            <a class="p-2 text-dark" href="frequencia.html">Frequência de césar</a>
+            <a class="p-2 text-dark" href="vigenere.html">Vigenère</a>
+        </nav>
+    </div>
+      <div class="container">
+          <div class="row">
+
+            <div class="col-md-12">
+                <h1>Cifra de César</h1>
+            </div>
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Você deseja?</label>
+                    <select id="desejo" class="form-control">
+                        <option value="1">Cifrar</option>
+                        <option value="2">Decifrar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantidade de pulos?</label>
+                    <input type="number" id="quantidade" class="form-control" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Texto</label>
+                    <textarea id="texto" rows="5" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success" onclick="enviar()">Enviar</button>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div id="resultado"></div>
+            </div>
+
+          </div>
+      </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script>
+        function enviar(){
+
+            const desejo = document.querySelector('#desejo');
+            const quantidade = document.querySelector('#quantidade');
+            const texto = document.querySelector('#texto');
+            const resultado = document.querySelector('#resultado');
+
+            const textoSemAcento = texto.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
+            const qtd = Number(quantidade.value);
+            const resultadoArray = [];
+
+            for(let letra of textoSemAcento) {
+                const codigo = letra.charCodeAt() - 65;
+                const pulos = ((desejo.value == 1) ? qtd : qtd * -1);
+
+                if (codigo >= 0 && codigo <= 25) {
+                    resultadoArray.push(65 + (26 + codigo + pulos) % 26);
+                } else {
+                    resultadoArray.push(65 + codigo);
+                }
+            }
+
+            resultado.innerHTML = '<h1>Resultado:</h1>'+String.fromCharCode(...resultadoArray);
+
+        }
+    </script>
+
+  </body>
+</html>

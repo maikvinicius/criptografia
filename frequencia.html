@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Criptografia</title>
+  </head>
+  <body>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h5 class="my-0 mr-md-auto font-weight-normal">CRIPTOGRAFIA</h5>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="index.html">César</a>
+            <a class="p-2 text-dark" href="frequencia.html">Frequência de césar</a>
+            <a class="p-2 text-dark" href="vigenere.html">Vigenère</a>
+        </nav>
+    </div>
+      <div class="container">
+          <div class="row">
+
+            <div class="col-md-12">
+                <h1>Análise de frequência - César</h1>
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+                <div class="form-group">
+                    <label>Mensagem Criptografada</label>
+                    <textarea id="mensagem" rows="5" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="form-group">
+                    <label>Texto</label>
+                    <textarea id="texto" rows="5" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <button class="btn btn-success" onclick="enviar()">Enviar</button>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+
+                <h1>Possibilidades</h1>
+                
+                <table id="possibilidades" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Chave</th>
+                            <th scope="col">Resultado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+
+                <h1>Frequência</h1>
+                
+                <table id="frequencia" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Letra</th>
+                            <th scope="col">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+            </div>
+
+          </div>
+      </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script>
+        function enviar(){
+            
+            const mensagem = document.querySelector('#mensagem');
+            const texto = document.querySelector('#texto');
+            const possibilidadesTabela = document.querySelector('#possibilidades tbody');
+            const frequenciaTabela = document.querySelector('#frequencia tbody');
+
+            const frequenciaArray = [];
+            const letras = texto.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/(\W|\d)/g, '');
+
+            if (letras.length > 0) {
+                frequenciaTabela.innerHTML = '';
+            }
+
+            // Contagem de frequencia
+
+            for(let letra of letras) {
+                const frequenciaIndice = frequenciaArray.findIndex(objeto => objeto.letra === letra);
+                
+                if (frequenciaIndice >= 0) {
+                    frequenciaArray[frequenciaIndice].quantidade++;
+                } else {
+                    frequenciaArray.push({ letra, quantidade: 1 });
+                }
+            }
+
+            frequenciaArray.sort((a, b) => b.quantidade - a.quantidade);
+
+            // Inserir tabela frequencia
+
+            for(let i = 0; i < 10; i++) {
+                if (!frequenciaArray[i]) {
+                    break;
+                }
+
+                const { letra, quantidade } = frequenciaArray[i];
+                const linha = document.createElement('tr');
+                const letraColuna = document.createElement('th');
+                const quantidadeColuna = document.createElement('td');
+                letraColuna.appendChild(document.createTextNode(letra));
+                quantidadeColuna.appendChild(document.createTextNode(quantidade));
+                linha.appendChild(letraColuna);
+                linha.appendChild(quantidadeColuna);
+                frequenciaTabela.appendChild(linha);
+            }
+
+            // Contagem possibilidades
+
+            const frequenciaArrayPossibilidades = [];
+            const mensagemCriptografada = mensagem.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
+
+            if (frequenciaArray.length > 0) {
+                possibilidadesTabela.innerHTML = '';
+            } else {
+                alert('O texto necessita de caracteres!')
+            }
+
+            // Quantidade de frequencia
+
+            for(let letra of mensagemCriptografada.replace(/(\W|\d)/g, '')) {
+                const frequenciaIndice = frequenciaArrayPossibilidades.findIndex(objeto => objeto.letra === letra);
+                
+                if (frequenciaIndice >= 0) {
+                    frequenciaArrayPossibilidades[frequenciaIndice].quantidade++;
+                } else {
+                    frequenciaArrayPossibilidades.push({ letra, quantidade: 1 });
+                }
+            }
+
+            frequenciaArrayPossibilidades.sort((a, b) => b.quantidade - a.quantidade);
+
+            // Inserir tabela possibilidades
+
+            const segundaLetra = frequenciaArrayPossibilidades[1].letra;
+            
+            for(let i = 0; i < 10; i++) {
+                if (!frequenciaArray[i]) {
+                    break;
+                }
+
+                const letraIndice = (26 + (segundaLetra.charCodeAt() - frequenciaArray[i].letra.charCodeAt())) % 26;
+                const resultadoArray = [];
+                const linha = document.createElement('tr');
+                const chaveColuna = document.createElement('th');
+                const resultadoColuna = document.createElement('td');
+
+                for(let letra of mensagemCriptografada) {
+                    const letraCodigo = letra.charCodeAt() - 65;
+            
+                    if (letraCodigo >= 0 && letraCodigo <= 25) {
+                        resultadoArray.push(65 + (26 + letraCodigo - letraIndice) % 26);
+                    } else {
+                        resultadoArray.push(65 + letraCodigo);
+                    }
+                }
+
+                chaveColuna.appendChild(document.createTextNode(letraIndice));
+                resultadoColuna.appendChild(document.createTextNode(String.fromCharCode(...resultadoArray)));
+                linha.appendChild(chaveColuna);
+                linha.appendChild(resultadoColuna);
+                possibilidadesTabela.appendChild(linha);
+            }
+
+        }
+    </script>
+
+  </body>
+</html>
