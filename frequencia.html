@@ -40,6 +40,10 @@
                 </div>
             </div>
 
+            <div class="col-md-12">
+                <div id="letraRepete"></div>
+            </div>
+
             <div class="col-sm-12 col-md-6">
 
                 <h1>Possibilidades</h1>
@@ -88,6 +92,7 @@
             const texto = document.querySelector('#texto');
             const possibilidadesTabela = document.querySelector('#possibilidades tbody');
             const frequenciaTabela = document.querySelector('#frequencia tbody');
+            const letraRepete = document.querySelector('#letraRepete');
 
             const frequenciaArray = [];
             const letras = texto.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/(\W|\d)/g, '');
@@ -155,14 +160,15 @@
 
             // Inserir tabela possibilidades
 
-            const segundaLetra = frequenciaArrayPossibilidades[1].letra;
+            const primeiraLetra = frequenciaArrayPossibilidades[0].letra;
+            letraRepete.innerHTML = '<h3>Letra que mais repete:</h3>'+primeiraLetra;
             
             for(let i = 0; i < 10; i++) {
                 if (!frequenciaArray[i]) {
                     break;
                 }
 
-                const letraIndice = (26 + (segundaLetra.charCodeAt() - frequenciaArray[i].letra.charCodeAt())) % 26;
+                const letraIndice = (26 + (primeiraLetra.charCodeAt() - frequenciaArray[i].letra.charCodeAt())) % 26;
                 const resultadoArray = [];
                 const linha = document.createElement('tr');
                 const chaveColuna = document.createElement('th');
